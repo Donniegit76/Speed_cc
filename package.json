@@ -1,0 +1,21 @@
+{
+  "name": "fast-cc",
+  "version": "1.0.0",
+  "description": "Fast_cc - Gestione Auto Sostitutive Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "keywords": [
+    "courtesy-car",
+    "dealership",
+    "calendar",
+    "scheduler"
+  ],
+  "author": "amlinux",
+  "license": "ISC"
+}

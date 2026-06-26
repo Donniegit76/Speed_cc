@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast_cc - Gestione Auto Sostitutive</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
+                        <circle cx="7" cy="17" r="2"></circle>
+                        <path d="M9 17h6"></path>
+                        <circle cx="17" cy="17" r="2"></circle>
+                    </svg>
+                    <h1>Fast_cc</h1>
+                </div>
+                <button class="btn-close-sidebar" id="close-sidebar-btn" aria-label="Chiudi sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <button class="btn-primary btn-add-booking" id="new-booking-sidebar-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Nuova Prenotazione
+                </button>
+
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <h2>Le Nostre Vetture</h2>
+                        <button class="btn-icon-only" id="add-vehicle-btn" title="Aggiungi nuova vettura">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                    </div>
+                    <div class="vehicle-list-wrapper">
+                        <ul class="vehicle-list" id="vehicle-list">
+                            <!-- Populated dynamically via JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <p>&copy; 2026 amlinux</p>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="btn-icon-only hamburger-btn" id="sidebar-toggle-btn" title="Menu">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                    </button>
+                    <button class="btn-secondary" id="today-btn">Oggi</button>
+                    <div class="nav-arrows">
+                        <button class="btn-icon-only" id="prev-btn" title="Precedente">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <button class="btn-icon-only" id="next-btn" title="Successivo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+                    <button class="btn-icon-only" id="refresh-btn" title="Ricarica dati dal database">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="refresh-icon">
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8m0 0V2m0 6h-6m-8.24 6.26A9 9 0 0 0 3 16m0 0v6m0-6h6"/>
+                        </svg>
+                    </button>
+                    <span class="current-date-label" id="current-date-label">Giugno 2026</span>
+                </div>
+
+                <div class="navbar-right">
+                    <button class="btn-icon-only theme-toggle-btn" id="theme-toggle-btn" title="Cambia tema">
+                        <!-- Moon icon (shown in dark mode) -->
+                        <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        <!-- Sun icon (shown in light mode, hidden by default) -->
+                        <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                    </button>
+                    <div class="view-selector">
+                        <button class="view-btn active" data-view="month">Mese</button>
+                        <button class="view-btn" data-view="week">Settimana</button>
+                        <button class="view-btn" data-view="timeline">Timeline Auto</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Calendar Display -->
+            <div class="calendar-viewport" id="calendar-viewport">
+                <!-- Injected via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Modal (Add / Edit) -->
+    <div class="modal-backdrop" id="booking-modal">
+        <div class="modal-content glassmorphism">
+            <div class="modal-header">
+                <h3 id="booking-modal-title">Nuova Prenotazione</h3>
+                <button class="btn-close-modal" id="close-booking-modal-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="booking-form" class="modal-form">
+                <input type="hidden" id="booking-id">
+                
+                <div class="form-group">
+                    <label for="booking-client">Nome e Cognome Cliente</label>
+                    <input type="text" id="booking-client" required placeholder="Es. Mario Rossi">
+                </div>
+
+                <div class="form-group">
+                    <label for="booking-vehicle">Seleziona Vettura Sostitutiva</label>
+                    <select id="booking-vehicle" required>
+                        <option value="" disabled selected>Scegli una vettura...</option>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="booking-status">Stato Prenotazione</label>
+                    <select id="booking-status" required>
+                        <option value="confirmed" selected>Confermata (Bloccata)</option>
+                        <option value="pending">Provvisoria (Opzione)</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="booking-start-date">Inizio Prenotazione (Data)</label>
+                        <input type="date" id="booking-start-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-start-time">Ora</label>
+                        <input type="time" id="booking-start-time" required value="09:00">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="booking-end-date">Fine Prenotazione (Data)</label>
+                        <input type="date" id="booking-end-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-end-time">Ora</label>
+                        <input type="time" id="booking-end-time" required value="18:00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="booking-notes">Note / Recapito</label>
+                    <textarea id="booking-notes" rows="3" placeholder="Recapito telefonico o motivi della vettura sostitutiva..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-danger" id="delete-booking-btn" style="display: none;">Elimina</button>
+                    <div class="footer-right-buttons">
+                        <button type="button" class="btn-secondary" id="cancel-booking-btn">Annulla</button>
+                        <button type="submit" class="btn-primary">Salva</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal (Add New) -->
+    <div class="modal-backdrop" id="vehicle-modal">
+        <div class="modal-content glassmorphism">
+            <div class="modal-header">
+                <h3 id="vehicle-modal-title">Aggiungi Nuova Vettura</h3>
+                <button class="btn-close-modal" id="close-vehicle-modal-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="vehicle-form" class="modal-form">
+                <input type="hidden" id="vehicle-id">
+                <div class="form-group">
+                    <label for="vehicle-model">Marca e Modello</label>
+                    <input type="text" id="vehicle-model" required placeholder="Es. Fiat Panda Hybrid, Jeep Renegade">
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle-plate">Targa</label>
+                    <input type="text" id="vehicle-plate" required placeholder="Es. AB123CD" style="text-transform: uppercase;">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicle-color">Colore Calendario</label>
+                        <div class="color-picker-container">
+                            <input type="color" id="vehicle-color" value="#3b82f6">
+                            <span class="color-preview-text">Seleziona colore per le prenotazioni</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicle-status">Stato Iniziale</label>
+                        <select id="vehicle-status" required>
+                            <option value="available" selected>Attiva / Disponibile</option>
+                            <option value="maintenance">In Manutenzione</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle-notes">Note Aggiuntive</label>
+                    <input type="text" id="vehicle-notes" placeholder="Es. Dettagli sul carburante, chiavi, parcheggio">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancel-vehicle-btn">Annulla</button>
+                    <button type="submit" class="btn-primary" id="vehicle-submit-btn">Aggiungi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div class="modal-backdrop" id="confirm-modal">
+        <div class="modal-content glassmorphism" style="width: 400px;">
+            <div class="modal-header" style="padding: 16px 20px;">
+                <h3 id="confirm-title">Conferma Operazione</h3>
+                <button class="btn-close-modal" id="close-confirm-modal-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 20px; font-size: 14px; color: var(--text-primary); text-align: center;">
+                <p id="confirm-message">Sei sicuro di voler procedere?</p>
+            </div>
+            <div class="modal-footer" style="padding: 16px 20px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); margin-top: 0;">
+                <button type="button" class="btn-secondary" id="confirm-cancel-btn">Annulla</button>
+                <button type="button" class="btn-danger" id="confirm-ok-btn">Procedi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

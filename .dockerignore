@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+database.json
+database.json.tmp
+database.json.bak
+data/
+.git
+.agents/
+*.md
