@@ -464,6 +464,16 @@ window.confirmDeleteVehicle = function(vehicleId) {
     );
 };
 
+async function handleVehicleSubmit(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('vehicle-id').value;
+    const model = document.getElementById('vehicle-model').value.trim();
+    const plate = document.getElementById('vehicle-plate').value.trim().toUpperCase();
+    const color = document.getElementById('vehicle-color').value;
+    const status = document.getElementById('vehicle-status').value;
+    const notes = document.getElementById('vehicle-notes').value.trim();
+
     const km = vehicleKmInput.value ? parseInt(vehicleKmInput.value, 10) : null;
     const fuel = vehicleFuelSelect.value || '';
 
