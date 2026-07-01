@@ -84,6 +84,10 @@
                 </div>
 
                 <div class="navbar-right">
+                    <button class="btn-secondary" id="report-btn" style="margin-right: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        Rendiconto
+                    </button>
                     <button class="btn-icon-only theme-toggle-btn" id="theme-toggle-btn" title="Cambia tema">
                         <!-- Moon icon (shown in dark mode) -->
                         <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,6 +172,55 @@
                     </div>
                 </div>
 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="booking-km-start">Km Partenza</label>
+                        <input type="number" id="booking-km-start" min="0" placeholder="Es. 12000">
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-km-end">Km Rientro</label>
+                        <input type="number" id="booking-km-end" min="0" placeholder="Es. 12350">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="booking-fuel-start">Carburante Partenza</label>
+                        <select id="booking-fuel-start">
+                            <option value="" selected>Non specificato</option>
+                            <option value="Vuoto">Vuoto</option>
+                            <option value="1/8">1/8</option>
+                            <option value="2/8">2/8</option>
+                            <option value="3/8">3/8</option>
+                            <option value="4/8">4/8 (1/2)</option>
+                            <option value="5/8">5/8</option>
+                            <option value="6/8">6/8</option>
+                            <option value="7/8">7/8</option>
+                            <option value="8/8">8/8 (Pieno)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-fuel-end">Carburante Rientro</label>
+                        <select id="booking-fuel-end">
+                            <option value="" selected>Non specificato</option>
+                            <option value="Vuoto">Vuoto</option>
+                            <option value="1/8">1/8</option>
+                            <option value="2/8">2/8</option>
+                            <option value="3/8">3/8</option>
+                            <option value="4/8">4/8 (1/2)</option>
+                            <option value="5/8">5/8</option>
+                            <option value="6/8">6/8</option>
+                            <option value="7/8">7/8</option>
+                            <option value="8/8">8/8 (Pieno)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="booking-revenue">Rendimento Noleggio (€)</label>
+                    <input type="number" id="booking-revenue" step="0.01" min="0" placeholder="Es. 150.00">
+                </div>
+
                 <div class="form-group">
                     <label for="booking-notes">Note / Recapito</label>
                     <textarea id="booking-notes" rows="3" placeholder="Recapito telefonico o motivi della vettura sostitutiva..."></textarea>
@@ -222,6 +275,28 @@
                     </div>
                 </div>
 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vehicle-km">Km Attuali</label>
+                        <input type="number" id="vehicle-km" min="0" placeholder="Es. 45000">
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicle-fuel">Carburante Attuale</label>
+                        <select id="vehicle-fuel">
+                            <option value="" selected>Non specificato</option>
+                            <option value="Vuoto">Vuoto</option>
+                            <option value="1/8">1/8</option>
+                            <option value="2/8">2/8</option>
+                            <option value="3/8">3/8</option>
+                            <option value="4/8">4/8 (1/2)</option>
+                            <option value="5/8">5/8</option>
+                            <option value="6/8">6/8</option>
+                            <option value="7/8">7/8</option>
+                            <option value="8/8">8/8 (Pieno)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="vehicle-notes">Note Aggiuntive</label>
                     <input type="text" id="vehicle-notes" placeholder="Es. Dettagli sul carburante, chiavi, parcheggio">
@@ -250,6 +325,77 @@
             <div class="modal-footer" style="padding: 16px 20px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); margin-top: 0;">
                 <button type="button" class="btn-secondary" id="confirm-cancel-btn">Annulla</button>
                 <button type="button" class="btn-danger" id="confirm-ok-btn">Procedi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal-backdrop" id="report-modal">
+        <div class="modal-content glassmorphism" style="width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h3>Rendiconto Mensile Noleggi</h3>
+                <button class="btn-close-modal" id="close-report-modal-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="report-filters" style="margin-bottom: 20px;">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="report-month">Mese / Anno</label>
+                        <input type="month" id="report-month">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="report-vehicle">Filtra per Vettura</label>
+                        <select id="report-vehicle">
+                            <option value="">Tutte le vetture</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-stats" style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+                <div class="stat-card" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+                    <span class="stat-label" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Noleggi Totali</span>
+                    <span class="stat-value" id="stat-count" style="font-size: 24px; font-weight: 700; font-family: var(--font-title);">0</span>
+                </div>
+                <div class="stat-card" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+                    <span class="stat-label" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Chilometri Totali</span>
+                    <span class="stat-value" id="stat-km" style="font-size: 24px; font-weight: 700; font-family: var(--font-title);">0 km</span>
+                </div>
+                <div class="stat-card" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+                    <span class="stat-label" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Rendimento Totale</span>
+                    <span class="stat-value" id="stat-revenue" style="font-size: 24px; font-weight: 700; font-family: var(--font-title); color: var(--success);">0.00 €</span>
+                </div>
+            </div>
+
+            <div class="report-table-wrapper" style="overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(0,0,0,0.15);">
+                <table class="report-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.01);">
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Cliente</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Veicolo</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Inizio</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Fine</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Km Partenza</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Km Rientro</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Delta Km</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: center;">Carburante (Part./Rient.)</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Rendimento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 0;">
+                <button type="button" class="btn-primary" id="export-csv-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon" style="width: 16px; height: 16px; margin-right: 6px; display: inline-block; vertical-align: middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Esporta CSV
+                </button>
+                <button type="button" class="btn-secondary" id="close-report-btn">Chiudi</button>
             </div>
         </div>
     </div>

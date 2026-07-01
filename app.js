@@ -66,6 +66,30 @@ const closeConfirmModalBtn = document.getElementById('close-confirm-modal-btn');
 
 const toastContainer = document.getElementById('toast-container');
 
+// Booking Form new inputs
+const bookingKmStartInput = document.getElementById('booking-km-start');
+const bookingKmEndInput = document.getElementById('booking-km-end');
+const bookingFuelStartSelect = document.getElementById('booking-fuel-start');
+const bookingFuelEndSelect = document.getElementById('booking-fuel-end');
+const bookingRevenueInput = document.getElementById('booking-revenue');
+
+// Vehicle Form new inputs
+const vehicleKmInput = document.getElementById('vehicle-km');
+const vehicleFuelSelect = document.getElementById('vehicle-fuel');
+
+// Report Modal selectors
+const reportBtn = document.getElementById('report-btn');
+const reportModal = document.getElementById('report-modal');
+const closeReportModalBtn = document.getElementById('close-report-modal-btn');
+const closeReportBtn = document.getElementById('close-report-btn');
+const reportMonthInput = document.getElementById('report-month');
+const reportVehicleSelect = document.getElementById('report-vehicle');
+const reportTableBody = document.getElementById('report-table-body');
+const statCount = document.getElementById('stat-count');
+const statKm = document.getElementById('stat-km');
+const statRevenue = document.getElementById('stat-revenue');
+const exportCsvBtn = document.getElementById('export-csv-btn');
+
 // Base API URL (Relative to hosted domain)
 const API_BASE = '/api';
 
@@ -273,6 +297,7 @@ function setupEventListeners() {
         if (e.target === bookingModal) closeBookingModal();
         if (e.target === vehicleModal) closeVehicleModal();
         if (e.target === confirmModal) closeConfirmModal();
+        if (e.target === reportModal) closeReportModal();
     });
 
     // Forms Submission
@@ -281,6 +306,28 @@ function setupEventListeners() {
 
     // Delete Booking
     deleteBookingBtn.addEventListener('click', handleBookingDelete);
+
+    // Report listeners
+    reportBtn.addEventListener('click', openReportModal);
+    closeReportModalBtn.addEventListener('click', closeReportModal);
+    closeReportBtn.addEventListener('click', closeReportModal);
+    reportMonthInput.addEventListener('change', renderReportData);
+    reportVehicleSelect.addEventListener('change', renderReportData);
+    exportCsvBtn.addEventListener('click', exportReportToCSV);
+
+    // Prefill booking start values based on selected vehicle
+    bookingVehicleSelect.addEventListener('change', () => {
+        const vehicleId = bookingVehicleSelect.value;
+        const vehicle = vehicles.find(v => v.id === vehicleId);
+        if (vehicle && !selectedBooking) {
+            if (vehicle.km !== undefined && vehicle.km !== null && !bookingKmStartInput.value) {
+                bookingKmStartInput.value = vehicle.km;
+            }
+            if (vehicle.fuel && !bookingFuelStartSelect.value) {
+                bookingFuelStartSelect.value = vehicle.fuel;
+            }
+        }
+    });
 }
 
 // Navigation math depending on active view
@@ -316,6 +363,9 @@ function renderVehicleList() {
 
         const statusLabel = vehicle.status === 'available' ? 'Attiva' : 'Manutenzione';
         const statusClass = vehicle.status === 'available' ? 'status-available' : 'status-maintenance';
+        
+        const kmLabel = vehicle.km !== undefined && vehicle.km !== null && vehicle.km !== '' ? `${vehicle.km} km` : 'N/D';
+        const fuelLabel = vehicle.fuel || 'N/D';
 
         li.innerHTML = `
             <div class="vehicle-item-left" onclick="toggleVehicleFilter('${vehicle.id}')">
@@ -327,6 +377,14 @@ function renderVehicleList() {
                     <div class="vehicle-details">
                         <span class="vehicle-plate">${vehicle.plate}</span>
                         <span class="vehicle-status-badge ${statusClass}">${statusLabel}</span>
+                    </div>
+                    <div class="vehicle-metrics">
+                        <span class="vehicle-metric-item" title="Chilometri attuali">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 10px; height: 10px; vertical-align: middle; margin-right: 2px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${kmLabel}
+                        </span>
+                        <span class="vehicle-metric-item" title="Carburante attuale">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 10px; height: 10px; vertical-align: middle; margin-right: 2px;"><path d="M3 22V2h10l7 7v13H3z"/></svg>${fuelLabel}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -406,17 +464,10 @@ window.confirmDeleteVehicle = function(vehicleId) {
     );
 };
 
-async function handleVehicleSubmit(e) {
-    e.preventDefault();
-    
-    const id = document.getElementById('vehicle-id').value;
-    const model = document.getElementById('vehicle-model').value.trim();
-    const plate = document.getElementById('vehicle-plate').value.trim().toUpperCase();
-    const color = document.getElementById('vehicle-color').value;
-    const status = document.getElementById('vehicle-status').value;
-    const notes = document.getElementById('vehicle-notes').value.trim();
+    const km = vehicleKmInput.value ? parseInt(vehicleKmInput.value, 10) : null;
+    const fuel = vehicleFuelSelect.value || '';
 
-    const vehiclePayload = { brandModel: model, plate, color, status, notes };
+    const vehiclePayload = { brandModel: model, plate, color, status, notes, km, fuel };
 
     try {
         let response;
@@ -469,6 +520,12 @@ async function handleBookingSubmit(e) {
     const status = bookingStatusSelect.value;
     const notes = bookingNotesInput.value.trim();
 
+    const kmStart = bookingKmStartInput.value ? parseInt(bookingKmStartInput.value, 10) : null;
+    const kmEnd = bookingKmEndInput.value ? parseInt(bookingKmEndInput.value, 10) : null;
+    const fuelStart = bookingFuelStartSelect.value || '';
+    const fuelEnd = bookingFuelEndSelect.value || '';
+    const revenue = bookingRevenueInput.value ? parseFloat(bookingRevenueInput.value) : null;
+
     const bookingPayload = {
         id: id || undefined, // Send undefined if new, to let server generate it
         vehicleId,
@@ -476,7 +533,12 @@ async function handleBookingSubmit(e) {
         startDate: `${startDate}T${startTime}`,
         endDate: `${endDate}T${endTime}`,
         status,
-        notes
+        notes,
+        kmStart,
+        kmEnd,
+        fuelStart,
+        fuelEnd,
+        revenue
     };
 
     try {
@@ -489,6 +551,27 @@ async function handleBookingSubmit(e) {
         if (!response.ok) {
             const err = await response.json();
             throw new Error(err.message || 'Errore durante il salvataggio.');
+        }
+
+        // Automatic synchronization: update vehicle's current km and fuel if kmEnd or fuelEnd are set
+        if (kmEnd || fuelEnd) {
+            const veh = vehicles.find(v => v.id === vehicleId);
+            if (veh) {
+                const updatedVeh = { ...veh };
+                if (kmEnd && (!veh.km || kmEnd > veh.km)) {
+                    updatedVeh.km = kmEnd;
+                }
+                if (fuelEnd) {
+                    updatedVeh.fuel = fuelEnd;
+                }
+                if (updatedVeh.km !== veh.km || updatedVeh.fuel !== veh.fuel) {
+                    await fetch(`${API_BASE}/vehicles/${vehicleId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedVeh)
+                    });
+                }
+            }
         }
 
         await fetchDataFromServer();
@@ -978,6 +1061,12 @@ function openBookingModal(booking = null, prefilledDate = null, prefilledTime = 
         bookingEndTimeInput.value = eTime;
         
         bookingNotesInput.value = booking.notes || '';
+
+        bookingKmStartInput.value = booking.kmStart !== undefined && booking.kmStart !== null ? booking.kmStart : '';
+        bookingKmEndInput.value = booking.kmEnd !== undefined && booking.kmEnd !== null ? booking.kmEnd : '';
+        bookingFuelStartSelect.value = booking.fuelStart || '';
+        bookingFuelEndSelect.value = booking.fuelEnd || '';
+        bookingRevenueInput.value = booking.revenue !== undefined && booking.revenue !== null ? booking.revenue : '';
         
         deleteBookingBtn.style.display = 'block';
     } else {
@@ -998,8 +1087,20 @@ function openBookingModal(booking = null, prefilledDate = null, prefilledTime = 
         bookingEndTimeInput.value = prefilledTime ? addHoursToTimeString(prefilledTime, 8) : '18:00';
         bookingStatusSelect.value = 'confirmed';
 
+        bookingKmStartInput.value = '';
+        bookingKmEndInput.value = '';
+        bookingFuelStartSelect.value = '';
+        bookingFuelEndSelect.value = '';
+        bookingRevenueInput.value = '';
+
         if (vehicleId) {
             bookingVehicleSelect.value = vehicleId;
+            // Trigger pre-fill from vehicle
+            const vehicle = vehicles.find(v => v.id === vehicleId);
+            if (vehicle) {
+                bookingKmStartInput.value = vehicle.km !== undefined && vehicle.km !== null ? vehicle.km : '';
+                bookingFuelStartSelect.value = vehicle.fuel || '';
+            }
         }
 
         deleteBookingBtn.style.display = 'none';
@@ -1027,6 +1128,8 @@ function openVehicleModal(vehicle = null) {
         document.getElementById('vehicle-color').value = vehicle.color;
         document.getElementById('vehicle-status').value = vehicle.status;
         document.getElementById('vehicle-notes').value = vehicle.notes || '';
+        vehicleKmInput.value = vehicle.km !== undefined && vehicle.km !== null ? vehicle.km : '';
+        vehicleFuelSelect.value = vehicle.fuel || '';
         vehicleModalTitle.textContent = 'Modifica Vettura';
         vehicleSubmitBtn.textContent = 'Salva Modifiche';
     } else {
@@ -1034,6 +1137,8 @@ function openVehicleModal(vehicle = null) {
         vehicleIdInput.value = '';
         const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6', '#06b6d4'];
         document.getElementById('vehicle-color').value = colors[Math.floor(Math.random() * colors.length)];
+        vehicleKmInput.value = '';
+        vehicleFuelSelect.value = '';
         vehicleModalTitle.textContent = 'Aggiungi Nuova Vettura';
         vehicleSubmitBtn.textContent = 'Aggiungi';
     }
@@ -1052,4 +1157,159 @@ function addHoursToTimeString(timeStr, hoursToAdd) {
     date.setHours(h + hoursToAdd);
     date.setMinutes(m);
     return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
+// --- RENDICONTO MENSILE LOGIC ---
+function openReportModal() {
+    // Populate month select default (current month/year in navigator)
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    reportMonthInput.value = `${year}-${month}`;
+
+    // Populate vehicles dropdown in report
+    reportVehicleSelect.innerHTML = '<option value="">Tutte le vetture</option>';
+    vehicles.forEach(vehicle => {
+        const option = document.createElement('option');
+        option.value = vehicle.id;
+        option.textContent = `${vehicle.brandModel} (${vehicle.plate})`;
+        reportVehicleSelect.appendChild(option);
+    });
+
+    renderReportData();
+    reportModal.classList.add('active');
+}
+
+function closeReportModal() {
+    reportModal.classList.remove('active');
+}
+
+function renderReportData() {
+    if (!reportMonthInput.value) return;
+    const [selectedYear, selectedMonth] = reportMonthInput.value.split('-').map(Number);
+    const filterVehicleId = reportVehicleSelect.value;
+
+    reportTableBody.innerHTML = '';
+
+    // Filter bookings that belong to the selected month and matches vehicle
+    const filteredBookings = bookings.filter(b => {
+        const bDate = new Date(b.startDate);
+        const isSameMonth = bDate.getFullYear() === selectedYear && (bDate.getMonth() + 1) === selectedMonth;
+        const matchesVehicle = !filterVehicleId || b.vehicleId === filterVehicleId;
+        return isSameMonth && matchesVehicle;
+    }).sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+    let totalCount = filteredBookings.length;
+    let totalKm = 0;
+    let totalRevenue = 0;
+
+    if (totalCount === 0) {
+        reportTableBody.innerHTML = `
+            <tr>
+                <td colspan="9" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                    Nessun noleggio registrato per questo periodo
+                </td>
+            </tr>
+        `;
+        statCount.textContent = '0';
+        statKm.textContent = '0 km';
+        statRevenue.textContent = '0.00 €';
+        return;
+    }
+
+    filteredBookings.forEach(b => {
+        const vehicle = vehicles.find(v => v.id === b.vehicleId);
+        const vehicleName = vehicle ? `${vehicle.brandModel} (${vehicle.plate})` : 'Sconosciuto';
+
+        const kmStart = b.kmStart !== undefined && b.kmStart !== null && b.kmStart !== '' ? parseInt(b.kmStart, 10) : null;
+        const kmEnd = b.kmEnd !== undefined && b.kmEnd !== null && b.kmEnd !== '' ? parseInt(b.kmEnd, 10) : null;
+        let deltaKm = '';
+        if (kmStart !== null && kmEnd !== null) {
+            const diff = kmEnd - kmStart;
+            deltaKm = `${diff} km`;
+            totalKm += diff;
+        }
+
+        const fuelStart = b.fuelStart || '-';
+        const fuelEnd = b.fuelEnd || '-';
+        const fuelText = fuelStart !== '-' || fuelEnd !== '-' ? `${fuelStart} → ${fuelEnd}` : '-';
+
+        const revenue = b.revenue !== undefined && b.revenue !== null && b.revenue !== '' ? parseFloat(b.revenue) : 0;
+        totalRevenue += revenue;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding: 12px 16px;"><strong>${b.clientName}</strong></td>
+            <td style="padding: 12px 16px;">${vehicleName}</td>
+            <td style="padding: 12px 16px;">${formatDateItalian(b.startDate)}</td>
+            <td style="padding: 12px 16px;">${formatDateItalian(b.endDate)}</td>
+            <td style="padding: 12px 16px; text-align: right;">${kmStart !== null ? kmStart : '-'}</td>
+            <td style="padding: 12px 16px; text-align: right;">${kmEnd !== null ? kmEnd : '-'}</td>
+            <td style="padding: 12px 16px; text-align: right; font-weight: 600;">${deltaKm || '-'}</td>
+            <td style="padding: 12px 16px; text-align: center;">${fuelText}</td>
+            <td style="padding: 12px 16px; text-align: right; font-weight: 600; color: var(--success);">${revenue.toFixed(2)} €</td>
+        `;
+        reportTableBody.appendChild(tr);
+    });
+
+    statCount.textContent = totalCount;
+    statKm.textContent = `${totalKm} km`;
+    statRevenue.textContent = `${totalRevenue.toFixed(2)} €`;
+}
+
+function exportReportToCSV() {
+    if (!reportMonthInput.value) return;
+    const [selectedYear, selectedMonth] = reportMonthInput.value.split('-').map(Number);
+    const filterVehicleId = reportVehicleSelect.value;
+
+    const filteredBookings = bookings.filter(b => {
+        const bDate = new Date(b.startDate);
+        const isSameMonth = bDate.getFullYear() === selectedYear && (bDate.getMonth() + 1) === selectedMonth;
+        const matchesVehicle = !filterVehicleId || b.vehicleId === filterVehicleId;
+        return isSameMonth && matchesVehicle;
+    }).sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+    if (filteredBookings.length === 0) {
+        showToast('Esportazione Annullata', 'Nessun dato da esportare.', 'warning');
+        return;
+    }
+
+    // Costruisci il CSV
+    let csvContent = "\uFEFF"; // BOM per supportare caratteri speciali in Excel
+    csvContent += "Cliente;Veicolo;Inizio;Fine;Km Partenza;Km Rientro;Delta Km;Carburante Partenza;Carburante Rientro;Rendimento (EUR)\r\n";
+
+    filteredBookings.forEach(b => {
+        const vehicle = vehicles.find(v => v.id === b.vehicleId);
+        const vehicleName = vehicle ? `${vehicle.brandModel} (${vehicle.plate})` : 'Sconosciuto';
+        const kmStart = b.kmStart !== undefined && b.kmStart !== null && b.kmStart !== '' ? b.kmStart : '';
+        const kmEnd = b.kmEnd !== undefined && b.kmEnd !== null && b.kmEnd !== '' ? b.kmEnd : '';
+        const deltaKm = kmStart !== '' && kmEnd !== '' ? (kmEnd - kmStart) : '';
+        const fuelStart = b.fuelStart || '';
+        const fuelEnd = b.fuelEnd || '';
+        const revenue = b.revenue !== undefined && b.revenue !== null && b.revenue !== '' ? b.revenue.toFixed(2) : '0.00';
+
+        const row = [
+            b.clientName,
+            vehicleName,
+            formatDateItalian(b.startDate),
+            formatDateItalian(b.endDate),
+            kmStart,
+            kmEnd,
+            deltaKm,
+            fuelStart,
+            fuelEnd,
+            revenue
+        ].map(val => `"${val.toString().replace(/"/g, '""')}"`).join(';');
+        csvContent += row + "\r\n";
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const vehicleNamePart = filterVehicleId ? `_${vehicles.find(v => v.id === filterVehicleId).plate}` : '';
+    link.setAttribute("download", `rendiconto_${selectedYear}_${selectedMonth}${vehicleNamePart}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('CSV Esportato', 'Il rendiconto è stato scaricato correttamente.', 'success');
 }
