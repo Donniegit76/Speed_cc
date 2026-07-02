@@ -160,10 +160,37 @@ body.light-theme .timeline-header-row {
     background-color: #f8fafc;
 }
 
+/* Default color-scheme (dark) so native browser widgets (date/month pickers) match */
+:root {
+    color-scheme: dark;
+}
+
 /* Theme toggle button sizing */
 .theme-toggle-btn svg {
     width: 18px;
     height: 18px;
+}
+
+/* Language toggle button */
+.lang-toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    font-family: var(--font-title);
+}
+
+.lang-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 body {

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fast_cc - Gestione Auto Sostitutive</title>
+    <title data-i18n-title="true">Fast_cc - Gestione Auto Sostitutive</title>
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,12 +35,12 @@
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
-                    Nuova Prenotazione
+                    <span data-i18n="newBooking">Nuova Prenotazione</span>
                 </button>
 
                 <div class="sidebar-section">
                     <div class="section-header">
-                        <h2>Le Nostre Vetture</h2>
+                        <h2 data-i18n="ourVehicles">Le Nostre Vetture</h2>
                         <button class="btn-icon-only" id="add-vehicle-btn" title="Aggiungi nuova vettura">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         </button>
@@ -66,7 +66,7 @@
                     <button class="btn-icon-only hamburger-btn" id="sidebar-toggle-btn" title="Menu">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
                     </button>
-                    <button class="btn-secondary" id="today-btn">Oggi</button>
+                    <button class="btn-secondary" id="today-btn" data-i18n="today">Oggi</button>
                     <div class="nav-arrows">
                         <button class="btn-icon-only" id="prev-btn" title="Precedente">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -86,7 +86,10 @@
                 <div class="navbar-right">
                     <button class="btn-secondary" id="report-btn" style="margin-right: 8px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                        Rendiconto
+                        <span data-i18n="report">Rendiconto</span>
+                    </button>
+                    <button class="btn-icon-only lang-toggle-btn" id="lang-toggle-btn" title="Switch Language">
+                        <span id="lang-label" style="font-size: 11px; font-weight: 700; letter-spacing: 0.5px;">EN</span>
                     </button>
                     <button class="btn-icon-only theme-toggle-btn" id="theme-toggle-btn" title="Cambia tema">
                         <!-- Moon icon (shown in dark mode) -->
@@ -103,9 +106,9 @@
                         </svg>
                     </button>
                     <div class="view-selector">
-                        <button class="view-btn active" data-view="month">Mese</button>
-                        <button class="view-btn" data-view="week">Settimana</button>
-                        <button class="view-btn" data-view="timeline">Timeline Auto</button>
+                        <button class="view-btn active" data-view="month" data-i18n="viewMonth">Mese</button>
+                        <button class="view-btn" data-view="week" data-i18n="viewWeek">Settimana</button>
+                        <button class="view-btn" data-view="timeline" data-i18n="viewTimeline">Timeline Auto</button>
                     </div>
                 </div>
             </header>
@@ -121,7 +124,7 @@
     <div class="modal-backdrop" id="booking-modal">
         <div class="modal-content glassmorphism">
             <div class="modal-header">
-                <h3 id="booking-modal-title">Nuova Prenotazione</h3>
+                <h3 id="booking-modal-title" data-i18n="newBooking">Nuova Prenotazione</h3>
                 <button class="btn-close-modal" id="close-booking-modal-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
@@ -130,56 +133,56 @@
                 <input type="hidden" id="booking-id">
                 
                 <div class="form-group">
-                    <label for="booking-client">Nome e Cognome Cliente</label>
-                    <input type="text" id="booking-client" required placeholder="Es. Mario Rossi">
+                    <label for="booking-client" data-i18n="clientName">Nome e Cognome Cliente</label>
+                    <input type="text" id="booking-client" required data-i18n-placeholder="clientNamePlaceholder" placeholder="Es. Mario Rossi">
                 </div>
 
                 <div class="form-group">
-                    <label for="booking-vehicle">Seleziona Vettura Sostitutiva</label>
+                    <label for="booking-vehicle" data-i18n="selectVehicle">Seleziona Vettura Sostitutiva</label>
                     <select id="booking-vehicle" required>
-                        <option value="" disabled selected>Scegli una vettura...</option>
+                        <option value="" disabled selected data-i18n="chooseVehicle">Scegli una vettura...</option>
                         <!-- Populated via JS -->
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="booking-status">Stato Prenotazione</label>
+                    <label for="booking-status" data-i18n="bookingStatus">Stato Prenotazione</label>
                     <select id="booking-status" required>
-                        <option value="confirmed" selected>Confermata (Bloccata)</option>
-                        <option value="pending">Provvisoria (Opzione)</option>
+                        <option value="confirmed" selected data-i18n="statusConfirmed">Confermata (Bloccata)</option>
+                        <option value="pending" data-i18n="statusPending">Provvisoria (Opzione)</option>
                     </select>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="booking-start-date">Inizio Prenotazione (Data)</label>
+                        <label for="booking-start-date" data-i18n="startDate">Inizio Prenotazione (Data)</label>
                         <input type="date" id="booking-start-date" required>
                     </div>
                     <div class="form-group">
-                        <label for="booking-start-time">Ora</label>
+                        <label for="booking-start-time" data-i18n="time">Ora</label>
                         <input type="time" id="booking-start-time" required value="09:00">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="booking-end-date">Fine Prenotazione (Data)</label>
+                        <label for="booking-end-date" data-i18n="endDate">Fine Prenotazione (Data)</label>
                         <input type="date" id="booking-end-date" required>
                     </div>
                     <div class="form-group">
-                        <label for="booking-end-time">Ora</label>
+                        <label for="booking-end-time" data-i18n="time">Ora</label>
                         <input type="time" id="booking-end-time" required value="18:00">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="booking-km-start">Km Partenza</label>
-                        <input type="number" id="booking-km-start" min="0" placeholder="Es. 12000">
+                        <label for="booking-km-start" data-i18n="kmStart">Km Partenza</label>
+                        <input type="number" id="booking-km-start" min="0" data-i18n-placeholder="kmStartPh" placeholder="Es. 12000">
                     </div>
                     <div class="form-group">
-                        <label for="booking-km-end">Km Rientro</label>
-                        <input type="number" id="booking-km-end" min="0" placeholder="Es. 12350">
+                        <label for="booking-km-end" data-i18n="kmEnd">Km Rientro</label>
+                        <input type="number" id="booking-km-end" min="0" data-i18n-placeholder="kmEndPh" placeholder="Es. 12350">
                     </div>
                 </div>
 
@@ -333,7 +336,7 @@
     <div class="modal-backdrop" id="report-modal">
         <div class="modal-content glassmorphism" style="width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
-                <h3>Rendiconto Mensile Noleggi</h3>
+                <h3 data-i18n="reportTitle">Rendiconto Mensile Noleggi</h3>
                 <button class="btn-close-modal" id="close-report-modal-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
@@ -342,13 +345,13 @@
             <div class="report-filters" style="margin-bottom: 20px;">
                 <div class="form-row">
                     <div class="form-group" style="flex: 1;">
-                        <label for="report-month">Mese / Anno</label>
-                        <input type="month" id="report-month">
+                        <label for="report-month" data-i18n="reportMonthLabel">Mese / Anno</label>
+                        <input type="month" id="report-month" style="color-scheme: inherit;">
                     </div>
                     <div class="form-group" style="flex: 1;">
-                        <label for="report-vehicle">Filtra per Vettura</label>
+                        <label for="report-vehicle" data-i18n="filterByVehicle">Filtra per Vettura</label>
                         <select id="report-vehicle">
-                            <option value="">Tutte le vetture</option>
+                            <option value="" data-i18n="allVehicles">Tutte le vetture</option>
                         </select>
                     </div>
                 </div>
@@ -356,15 +359,15 @@
 
             <div class="report-stats" style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
                 <div class="stat-card" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 4px;">
-                    <span class="stat-label" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Noleggi Totali</span>
+                    <span class="stat-label" data-i18n="totalRentals" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Noleggi Totali</span>
                     <span class="stat-value" id="stat-count" style="font-size: 24px; font-weight: 700; font-family: var(--font-title);">0</span>
                 </div>
                 <div class="stat-card" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 4px;">
-                    <span class="stat-label" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Chilometri Totali</span>
+                    <span class="stat-label" data-i18n="totalKm" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Chilometri Totali</span>
                     <span class="stat-value" id="stat-km" style="font-size: 24px; font-weight: 700; font-family: var(--font-title);">0 km</span>
                 </div>
                 <div class="stat-card" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 4px;">
-                    <span class="stat-label" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Rendimento Totale</span>
+                    <span class="stat-label" data-i18n="totalRevenue" style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Rendimento Totale</span>
                     <span class="stat-value" id="stat-revenue" style="font-size: 24px; font-weight: 700; font-family: var(--font-title); color: var(--success);">0.00 €</span>
                 </div>
             </div>
@@ -393,9 +396,9 @@
             <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 0;">
                 <button type="button" class="btn-primary" id="export-csv-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4);">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon" style="width: 16px; height: 16px; margin-right: 6px; display: inline-block; vertical-align: middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    Esporta CSV
+                    <span data-i18n="exportCSV">Esporta CSV</span>
                 </button>
-                <button type="button" class="btn-secondary" id="close-report-btn">Chiudi</button>
+                <button type="button" class="btn-secondary" id="close-report-btn" data-i18n="close">Chiudi</button>
             </div>
         </div>
     </div>

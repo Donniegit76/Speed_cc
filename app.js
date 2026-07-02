@@ -11,6 +11,253 @@ let currentView = 'month';    // 'month' | 'week' | 'timeline'
 let activeFilters = [];       // List of vehicle IDs to show on calendar
 let selectedBooking = null;   // Active booking being edited
 let confirmCallback = null;   // Active callback for the custom confirm modal
+let currentLang = 'it';       // 'it' | 'en'
+
+// --- I18N TRANSLATIONS ---
+const translations = {
+    it: {
+        // Page title
+        pageTitle: 'Fast_cc - Gestione Auto Sostitutive',
+        // Sidebar
+        newBooking: 'Nuova Prenotazione',
+        ourVehicles: 'Le Nostre Vetture',
+        noVehicles: 'Nessuna vettura in flotta',
+        // Navbar
+        today: 'Oggi',
+        report: 'Rendiconto',
+        viewMonth: 'Mese',
+        viewWeek: 'Settimana',
+        viewTimeline: 'Timeline Auto',
+        // Booking form
+        editBooking: 'Modifica Prenotazione',
+        clientName: 'Nome e Cognome Cliente',
+        clientNamePlaceholder: 'Es. Mario Rossi',
+        selectVehicle: 'Seleziona Vettura Sostitutiva',
+        chooseVehicle: 'Scegli una vettura...',
+        bookingStatus: 'Stato Prenotazione',
+        statusConfirmed: 'Confermata (Bloccata)',
+        statusPending: 'Provvisoria (Opzione)',
+        startDate: 'Inizio Prenotazione (Data)',
+        endDate: 'Fine Prenotazione (Data)',
+        time: 'Ora',
+        kmStart: 'Km Partenza',
+        kmEnd: 'Km Rientro',
+        kmStartPh: 'Es. 12000',
+        kmEndPh: 'Es. 12350',
+        fuelStart: 'Carburante Partenza',
+        fuelEnd: 'Carburante Rientro',
+        fuelNotSpecified: 'Non specificato',
+        fuelEmpty: 'Vuoto',
+        fuelFull: '8/8 (Pieno)',
+        revenue: 'Rendimento Noleggio (€)',
+        revenuePh: 'Es. 150.00',
+        notes: 'Note / Recapito',
+        notesPh: 'Recapito telefonico o motivi della vettura sostitutiva...',
+        save: 'Salva',
+        cancel: 'Annulla',
+        delete: 'Elimina',
+        // Vehicle form
+        addVehicle: 'Aggiungi Nuova Vettura',
+        editVehicle: 'Modifica Vettura',
+        brandModel: 'Marca e Modello',
+        brandModelPh: 'Es. Fiat Panda Hybrid, Jeep Renegade',
+        plate: 'Targa',
+        platePh: 'Es. AB123CD',
+        calendarColor: 'Colore Calendario',
+        colorPreview: 'Seleziona colore per le prenotazioni',
+        initialStatus: 'Stato Iniziale',
+        statusAvailable: 'Attiva / Disponibile',
+        statusMaintenance: 'In Manutenzione',
+        currentKm: 'Km Attuali',
+        currentKmPh: 'Es. 45000',
+        currentFuel: 'Carburante Attuale',
+        vehicleNotes: 'Note Aggiuntive',
+        vehicleNotesPh: 'Es. Dettagli sul carburante, chiavi, parcheggio',
+        addVehicleBtn: 'Aggiungi',
+        saveChangesBtn: 'Salva Modifiche',
+        // Report
+        reportTitle: 'Rendiconto Mensile Noleggi',
+        reportMonthLabel: 'Mese / Anno',
+        filterByVehicle: 'Filtra per Vettura',
+        allVehicles: 'Tutte le vetture',
+        totalRentals: 'Noleggi Totali',
+        totalKm: 'Chilometri Totali',
+        totalRevenue: 'Rendimento Totale',
+        exportCSV: 'Esporta CSV',
+        close: 'Chiudi',
+        noReportData: 'Nessun noleggio registrato per questo periodo',
+        // Table headers
+        thClient: 'Cliente',
+        thVehicle: 'Veicolo',
+        thStart: 'Inizio',
+        thEnd: 'Fine',
+        thKmStart: 'Km Partenza',
+        thKmEnd: 'Km Rientro',
+        thDeltaKm: 'Delta Km',
+        thFuel: 'Carburante (Part./Rient.)',
+        thRevenue: 'Rendimento',
+        // Confirm modal
+        confirmOp: 'Conferma Operazione',
+        confirmProceed: 'Procedi',
+        // Vehicle list
+        statusActive: 'Attiva',
+        statusMaint: 'Manutenzione',
+        // Toast messages
+        syncOk: 'Dati Sincronizzati',
+        syncOkMsg: 'Stato flotta caricato dal server.',
+        connError: 'Errore di Connessione',
+        connErrorMsg: 'Impossibile connettersi al database server.',
+        bookingSaved: 'Prenotazione Salvata',
+        bookingCreated: 'creata',
+        bookingEdited: 'modificata',
+        bookingDeleted: 'Prenotazione Eliminata',
+        bookingDeletedMsg: 'è stata cancellata.',
+        vehicleAdded: 'Vettura Aggiunta',
+        vehicleUpdated: 'Vettura Aggiornata',
+        vehicleInserted: 'inserita',
+        vehicleUpdatedLabel: 'aggiornata',
+        vehicleRemoved: 'Vettura Rimossa',
+        vehicleRemovedMsg: 'è stata eliminata.',
+        csvExported: 'CSV Esportato',
+        csvExportedMsg: 'Il rendiconto è stato scaricato correttamente.',
+        exportCancelled: 'Esportazione Annullata',
+        exportCancelledMsg: 'Nessun dato da esportare.',
+        // Unknown
+        unknown: 'Sconosciuto',
+    },
+    en: {
+        pageTitle: 'Fast_cc - Replacement Vehicle Management',
+        newBooking: 'New Booking',
+        ourVehicles: 'Our Vehicles',
+        noVehicles: 'No vehicles in fleet',
+        today: 'Today',
+        report: 'Report',
+        viewMonth: 'Month',
+        viewWeek: 'Week',
+        viewTimeline: 'Vehicle Timeline',
+        editBooking: 'Edit Booking',
+        clientName: 'Client Full Name',
+        clientNamePlaceholder: 'E.g. John Smith',
+        selectVehicle: 'Select Replacement Vehicle',
+        chooseVehicle: 'Choose a vehicle...',
+        bookingStatus: 'Booking Status',
+        statusConfirmed: 'Confirmed (Locked)',
+        statusPending: 'Provisional (Option)',
+        startDate: 'Booking Start (Date)',
+        endDate: 'Booking End (Date)',
+        time: 'Time',
+        kmStart: 'Start Mileage',
+        kmEnd: 'Return Mileage',
+        kmStartPh: 'E.g. 12000',
+        kmEndPh: 'E.g. 12350',
+        fuelStart: 'Fuel at Departure',
+        fuelEnd: 'Fuel at Return',
+        fuelNotSpecified: 'Not specified',
+        fuelEmpty: 'Empty',
+        fuelFull: '8/8 (Full)',
+        revenue: 'Rental Revenue (€)',
+        revenuePh: 'E.g. 150.00',
+        notes: 'Notes / Contact',
+        notesPh: 'Phone number or reason for replacement vehicle...',
+        save: 'Save',
+        cancel: 'Cancel',
+        delete: 'Delete',
+        addVehicle: 'Add New Vehicle',
+        editVehicle: 'Edit Vehicle',
+        brandModel: 'Make and Model',
+        brandModelPh: 'E.g. Fiat Panda Hybrid, Jeep Renegade',
+        plate: 'License Plate',
+        platePh: 'E.g. AB123CD',
+        calendarColor: 'Calendar Color',
+        colorPreview: 'Select color for bookings',
+        initialStatus: 'Initial Status',
+        statusAvailable: 'Active / Available',
+        statusMaintenance: 'Under Maintenance',
+        currentKm: 'Current Mileage',
+        currentKmPh: 'E.g. 45000',
+        currentFuel: 'Current Fuel Level',
+        vehicleNotes: 'Additional Notes',
+        vehicleNotesPh: 'E.g. Fuel details, keys, parking',
+        addVehicleBtn: 'Add Vehicle',
+        saveChangesBtn: 'Save Changes',
+        reportTitle: 'Monthly Rental Report',
+        reportMonthLabel: 'Month / Year',
+        filterByVehicle: 'Filter by Vehicle',
+        allVehicles: 'All vehicles',
+        totalRentals: 'Total Rentals',
+        totalKm: 'Total Kilometres',
+        totalRevenue: 'Total Revenue',
+        exportCSV: 'Export CSV',
+        close: 'Close',
+        noReportData: 'No rentals recorded for this period',
+        thClient: 'Client',
+        thVehicle: 'Vehicle',
+        thStart: 'Start',
+        thEnd: 'End',
+        thKmStart: 'Start Km',
+        thKmEnd: 'Return Km',
+        thDeltaKm: 'Delta Km',
+        thFuel: 'Fuel (Dep./Ret.)',
+        thRevenue: 'Revenue',
+        confirmOp: 'Confirm Action',
+        confirmProceed: 'Proceed',
+        statusActive: 'Active',
+        statusMaint: 'Maintenance',
+        syncOk: 'Data Synced',
+        syncOkMsg: 'Fleet status loaded from server.',
+        connError: 'Connection Error',
+        connErrorMsg: 'Unable to connect to the database server.',
+        bookingSaved: 'Booking Saved',
+        bookingCreated: 'created',
+        bookingEdited: 'updated',
+        bookingDeleted: 'Booking Deleted',
+        bookingDeletedMsg: 'has been cancelled.',
+        vehicleAdded: 'Vehicle Added',
+        vehicleUpdated: 'Vehicle Updated',
+        vehicleInserted: 'added',
+        vehicleUpdatedLabel: 'updated',
+        vehicleRemoved: 'Vehicle Removed',
+        vehicleRemovedMsg: 'has been removed.',
+        csvExported: 'CSV Exported',
+        csvExportedMsg: 'The report has been downloaded successfully.',
+        exportCancelled: 'Export Cancelled',
+        exportCancelledMsg: 'No data to export.',
+        unknown: 'Unknown',
+    }
+};
+
+// Shorthand translation helper
+function t(key) {
+    return (translations[currentLang] && translations[currentLang][key]) || translations['it'][key] || key;
+}
+
+// Apply translations to all data-i18n elements
+function applyLanguage() {
+    document.getElementById('html-root').lang = currentLang;
+    document.title = t('pageTitle');
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+    });
+
+    // Update lang button label to show the OTHER language (the one you can switch to)
+    const label = document.getElementById('lang-label');
+    if (label) label.textContent = currentLang === 'it' ? 'EN' : 'IT';
+
+    localStorage.setItem('veloce_lang', currentLang);
+}
+
+function toggleLanguage() {
+    currentLang = currentLang === 'it' ? 'en' : 'it';
+    applyLanguage();
+    // Re-render to update dynamic JS-generated text
+    renderVehicleList();
+    renderActiveView();
+    updateVehicleSelectOptions();
+}
 
 // --- SELECTORS ---
 const sidebar = document.getElementById('sidebar');
@@ -100,17 +347,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initApp() {
     applyTheme(localStorage.getItem('veloce_theme') || 'dark');
+    currentLang = localStorage.getItem('veloce_lang') || 'it';
     setupEventListeners();
+    applyLanguage();
     await fetchDataFromServer(true); // Initial fetch with seed filters
 }
 
 function applyTheme(theme) {
     if (theme === 'light') {
         document.body.classList.add('light-theme');
+        document.documentElement.style.colorScheme = 'light';
         themeIconMoon.style.display = 'none';
         themeIconSun.style.display = 'block';
     } else {
         document.body.classList.remove('light-theme');
+        document.documentElement.style.colorScheme = 'dark';
         themeIconMoon.style.display = 'block';
         themeIconSun.style.display = 'none';
     }
@@ -126,7 +377,7 @@ function toggleTheme() {
 async function fetchDataFromServer(setInitialFilters = false) {
     try {
         const response = await fetch(`${API_BASE}/data`);
-        if (!response.ok) throw new Error('Impossibile scaricare i dati.');
+        if (!response.ok) throw new Error(t('connErrorMsg'));
         
         const data = await response.json();
         vehicles = data.vehicles;
@@ -141,7 +392,7 @@ async function fetchDataFromServer(setInitialFilters = false) {
         renderActiveView();
     } catch (error) {
         console.error("Fetch Error:", error);
-        showToast('Errore di Connessione', 'Impossibile connettersi al database server.', 'error');
+        showToast(t('connError'), t('connErrorMsg'), 'error');
     }
 }
 
@@ -246,7 +497,6 @@ function setupEventListeners() {
     refreshBtn.addEventListener('click', async () => {
         refreshIcon.classList.add('spinning');
         
-        // Ensure a satisfying minimum spinning duration of 600ms
         const startTime = Date.now();
         await fetchDataFromServer();
         const elapsedTime = Date.now() - startTime;
@@ -254,7 +504,7 @@ function setupEventListeners() {
         
         setTimeout(() => {
             refreshIcon.classList.remove('spinning');
-            showToast('Dati Sincronizzati', 'Stato flotta caricato dal server.', 'success');
+            showToast(t('syncOk'), t('syncOkMsg'), 'success');
         }, delay);
     });
 
@@ -283,6 +533,9 @@ function setupEventListeners() {
     
     closeVehicleModalBtn.addEventListener('click', closeVehicleModal);
     cancelVehicleBtn.addEventListener('click', closeVehicleModal);
+
+    // Language toggle
+    document.getElementById('lang-toggle-btn').addEventListener('click', toggleLanguage);
 
     // Custom confirm buttons events
     confirmOkBtn.addEventListener('click', () => {
@@ -347,7 +600,7 @@ function renderVehicleList() {
     if (vehicles.length === 0) {
         vehicleListEl.innerHTML = `
             <li style="padding: 16px; text-align: center; font-size: 12px; color: var(--text-muted);">
-                Nessuna vettura in flotta
+                ${t('noVehicles')}
             </li>
         `;
         return;
@@ -361,7 +614,7 @@ function renderVehicleList() {
         // Inline css variable for checkbox styling
         li.style.setProperty('--checkbox-color', vehicle.color);
 
-        const statusLabel = vehicle.status === 'available' ? 'Attiva' : 'Manutenzione';
+        const statusLabel = vehicle.status === 'available' ? t('statusActive') : t('statusMaint');
         const statusClass = vehicle.status === 'available' ? 'status-available' : 'status-maintenance';
         
         const kmLabel = vehicle.km !== undefined && vehicle.km !== null && vehicle.km !== '' ? `${vehicle.km} km` : 'N/D';
@@ -440,15 +693,17 @@ window.confirmDeleteVehicle = function(vehicleId) {
     if (!vehicle) return;
 
     const countBookings = bookings.filter(b => b.vehicleId === vehicleId).length;
-    let confirmMsg = `Sei sicuro di voler eliminare la vettura <strong>${vehicle.brandModel}</strong> (${vehicle.plate})?`;
+    let confirmMsg = `${currentLang === 'it' ? 'Sei sicuro di voler eliminare la vettura' : 'Are you sure you want to delete the vehicle'} <strong>${vehicle.brandModel}</strong> (${vehicle.plate})?`;
     
     if (countBookings > 0) {
-        confirmMsg += `<br><br><span style="color: var(--danger); font-weight: bold;">ATTENZIONE:</span> Ci sono <strong>${countBookings}</strong> prenotazioni collegate che verranno rimosse permanentemente!`;
+        const warningText = currentLang === 'it'
+            ? `<br><br><span style="color: var(--danger); font-weight: bold;">ATTENZIONE:</span> Ci sono <strong>${countBookings}</strong> prenotazioni collegate che verranno rimosse permanentemente!`
+            : `<br><br><span style="color: var(--danger); font-weight: bold;">WARNING:</span> There are <strong>${countBookings}</strong> linked bookings that will be permanently removed!`;
+        confirmMsg += warningText;
     }
 
-    // Call custom confirmation modal
     showConfirmModal(
-        'Elimina Vettura',
+        currentLang === 'it' ? 'Elimina Vettura' : 'Delete Vehicle',
         confirmMsg,
         async () => {
             try {
@@ -456,7 +711,7 @@ window.confirmDeleteVehicle = function(vehicleId) {
                 if (!response.ok) throw new Error('Errore durante la cancellazione.');
 
                 await fetchDataFromServer();
-                showToast('Vettura Rimossa', `La vettura ${vehicle.brandModel} è stata eliminata.`, 'warning');
+                showToast(t('vehicleRemoved'), `${vehicle.brandModel} ${t('vehicleRemovedMsg')}`, 'warning');
             } catch (error) {
                 showToast('Errore', 'Impossibile eliminare la vettura dal server.', 'error');
             }
@@ -508,8 +763,8 @@ async function handleVehicleSubmit(e) {
 
         await fetchDataFromServer();
         closeVehicleModal();
-        const actionLabel = id ? 'aggiornata' : 'inserita';
-        showToast(id ? 'Vettura Aggiornata' : 'Vettura Aggiunta', `${model} ${actionLabel} correttamente.`, 'success');
+        const actionLabel = id ? t('vehicleUpdatedLabel') : t('vehicleInserted');
+        showToast(id ? t('vehicleUpdated') : t('vehicleAdded'), `${model} ${actionLabel} correttamente.`, 'success');
     } catch (error) {
         showToast('Errore', error.message, 'error');
     }
@@ -587,10 +842,10 @@ async function handleBookingSubmit(e) {
         await fetchDataFromServer();
         closeBookingModal();
         
-        const actLabel = id ? 'modificata' : 'creata';
-        showToast('Prenotazione Salvata', `La prenotazione di ${clientName} è stata ${actLabel}.`, 'success');
+        const actLabel = id ? t('bookingEdited') : t('bookingCreated');
+        showToast(t('bookingSaved'), `${currentLang === 'it' ? 'La prenotazione di' : 'The booking for'} ${clientName} ${currentLang === 'it' ? 'è stata' : 'has been'} ${actLabel}.`, 'success');
     } catch (error) {
-        showToast('Conflitto / Errore', error.message, 'error');
+        showToast('Errore', error.message, 'error');
     }
 }
 
@@ -602,8 +857,8 @@ function handleBookingDelete() {
     if (!booking) return;
 
     showConfirmModal(
-        'Elimina Prenotazione',
-        `Sei sicuro di voler eliminare la prenotazione di <strong>${booking.clientName}</strong>?`,
+        currentLang === 'it' ? 'Elimina Prenotazione' : 'Delete Booking',
+        `${currentLang === 'it' ? 'Sei sicuro di voler eliminare la prenotazione di' : 'Are you sure you want to delete the booking for'} <strong>${booking.clientName}</strong>?`,
         async () => {
             try {
                 const response = await fetch(`${API_BASE}/bookings/${id}`, { method: 'DELETE' });
@@ -611,7 +866,7 @@ function handleBookingDelete() {
 
                 await fetchDataFromServer();
                 closeBookingModal();
-                showToast('Prenotazione Eliminata', `La prenotazione di ${booking.clientName} è stata cancellata.`, 'warning');
+                showToast(t('bookingDeleted'), `${currentLang === 'it' ? 'La prenotazione di' : 'The booking for'} ${booking.clientName} ${t('bookingDeletedMsg')}`, 'warning');
             } catch (error) {
                 showToast('Errore', 'Impossibile cancellare la prenotazione.', 'error');
             }
@@ -632,8 +887,9 @@ function renderActiveView() {
         const sunday = new Date(monday);
         sunday.setDate(monday.getDate() + 6);
         
-        let startText = monday.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
-        let endText = sunday.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+        const locale = currentLang === 'it' ? 'it-IT' : 'en-GB';
+        let startText = monday.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+        let endText = sunday.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
         currentDateLabel.textContent = `${startText} - ${endText}`;
     }
 
@@ -662,7 +918,9 @@ function renderMonthView() {
     monthViewContainer.className = 'month-view';
 
     // RENDER DAYS OF WEEK HEADER
-    const weekdays = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+    const weekdays = currentLang === 'it'
+        ? ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom']
+        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const weekdaysHeader = document.createElement('div');
     weekdaysHeader.className = 'weekdays-header';
     weekdays.forEach(day => {
@@ -783,11 +1041,13 @@ function renderWeekView() {
     
     const emptyCell = document.createElement('div');
     emptyCell.className = 'week-grid-header-cell time-col-header';
-    emptyCell.textContent = 'Orari';
+    emptyCell.textContent = currentLang === 'it' ? 'Orari' : 'Times';
     header.appendChild(emptyCell);
 
     const weekDays = [];
-    const weekdayNames = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+    const weekdayNames = currentLang === 'it'
+        ? ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom']
+        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     for (let i = 0; i < 7; i++) {
         const d = new Date(monday);
         d.setDate(monday.getDate() + i);
@@ -923,13 +1183,15 @@ function renderTimelineView() {
 
     const vehHeader = document.createElement('div');
     vehHeader.className = 'timeline-vehicle-header';
-    vehHeader.textContent = 'Veicoli / Giorni';
+    vehHeader.textContent = currentLang === 'it' ? 'Veicoli / Giorni' : 'Vehicles / Days';
     headerRow.appendChild(vehHeader);
 
     const daysScroll = document.createElement('div');
     daysScroll.className = 'timeline-days-scroll';
 
-    const weekdayNames = ['Do', 'Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa'];
+    const weekdayNames = currentLang === 'it'
+        ? ['Do', 'Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa']
+        : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
     for (let day = 1; day <= daysInMonth; day++) {
         const cellDate = new Date(year, month, day);
@@ -1140,8 +1402,8 @@ function openVehicleModal(vehicle = null) {
         document.getElementById('vehicle-notes').value = vehicle.notes || '';
         vehicleKmInput.value = vehicle.km !== undefined && vehicle.km !== null ? vehicle.km : '';
         vehicleFuelSelect.value = vehicle.fuel || '';
-        vehicleModalTitle.textContent = 'Modifica Vettura';
-        vehicleSubmitBtn.textContent = 'Salva Modifiche';
+        vehicleModalTitle.textContent = t('editVehicle');
+        vehicleSubmitBtn.textContent = t('saveChangesBtn');
     } else {
         // ADD MODE — assign random color
         vehicleIdInput.value = '';
@@ -1149,8 +1411,8 @@ function openVehicleModal(vehicle = null) {
         document.getElementById('vehicle-color').value = colors[Math.floor(Math.random() * colors.length)];
         vehicleKmInput.value = '';
         vehicleFuelSelect.value = '';
-        vehicleModalTitle.textContent = 'Aggiungi Nuova Vettura';
-        vehicleSubmitBtn.textContent = 'Aggiungi';
+        vehicleModalTitle.textContent = t('addVehicle');
+        vehicleSubmitBtn.textContent = t('addVehicleBtn');
     }
 
     vehicleModal.classList.add('active');
@@ -1177,7 +1439,7 @@ function openReportModal() {
     reportMonthInput.value = `${year}-${month}`;
 
     // Populate vehicles dropdown in report
-    reportVehicleSelect.innerHTML = '<option value="">Tutte le vetture</option>';
+    reportVehicleSelect.innerHTML = `<option value="">${t('allVehicles')}</option>`;
     vehicles.forEach(vehicle => {
         const option = document.createElement('option');
         option.value = vehicle.id;
@@ -1216,7 +1478,7 @@ function renderReportData() {
         reportTableBody.innerHTML = `
             <tr>
                 <td colspan="9" style="text-align: center; padding: 24px; color: var(--text-muted);">
-                    Nessun noleggio registrato per questo periodo
+                    ${t('noReportData')}
                 </td>
             </tr>
         `;
@@ -1228,7 +1490,7 @@ function renderReportData() {
 
     filteredBookings.forEach(b => {
         const vehicle = vehicles.find(v => v.id === b.vehicleId);
-        const vehicleName = vehicle ? `${vehicle.brandModel} (${vehicle.plate})` : 'Sconosciuto';
+        const vehicleName = vehicle ? `${vehicle.brandModel} (${vehicle.plate})` : t('unknown');
 
         const kmStart = b.kmStart !== undefined && b.kmStart !== null && b.kmStart !== '' ? parseInt(b.kmStart, 10) : null;
         const kmEnd = b.kmEnd !== undefined && b.kmEnd !== null && b.kmEnd !== '' ? parseInt(b.kmEnd, 10) : null;
@@ -1279,7 +1541,7 @@ function exportReportToCSV() {
     }).sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
     if (filteredBookings.length === 0) {
-        showToast('Esportazione Annullata', 'Nessun dato da esportare.', 'warning');
+        showToast(t('exportCancelled'), t('exportCancelledMsg'), 'warning');
         return;
     }
 
@@ -1289,7 +1551,7 @@ function exportReportToCSV() {
 
     filteredBookings.forEach(b => {
         const vehicle = vehicles.find(v => v.id === b.vehicleId);
-        const vehicleName = vehicle ? `${vehicle.brandModel} (${vehicle.plate})` : 'Sconosciuto';
+        const vehicleName = vehicle ? `${vehicle.brandModel} (${vehicle.plate})` : t('unknown');
         const kmStart = b.kmStart !== undefined && b.kmStart !== null && b.kmStart !== '' ? b.kmStart : '';
         const kmEnd = b.kmEnd !== undefined && b.kmEnd !== null && b.kmEnd !== '' ? b.kmEnd : '';
         const deltaKm = kmStart !== '' && kmEnd !== '' ? (kmEnd - kmStart) : '';
@@ -1321,5 +1583,5 @@ function exportReportToCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast('CSV Esportato', 'Il rendiconto è stato scaricato correttamente.', 'success');
+    showToast(t('csvExported'), t('csvExportedMsg'), 'success');
 }
