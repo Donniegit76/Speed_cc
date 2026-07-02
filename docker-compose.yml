@@ -3,7 +3,7 @@ version: '3.8'
 services:
   fast-cc-app:
     build: .
-    container_name: fast_cc_spa
+    container_name: fast_cc
     restart: always
     ports:
       - "3000:3000"
