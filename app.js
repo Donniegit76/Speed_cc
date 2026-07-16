@@ -445,13 +445,15 @@ function closeConfirmModal() {
 
 // --- DATE HELPERS ---
 function formatMonthYear(date) {
-    return date.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })
+    const locale = currentLang === 'it' ? 'it-IT' : 'en-GB';
+    return date.toLocaleDateString(locale, { month: 'long', year: 'numeric' })
                .replace(/^\w/, c => c.toUpperCase()); // Capitalize first letter
 }
 
 function formatDateItalian(dateStr) {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const locale = currentLang === 'it' ? 'it-IT' : 'en-GB';
+    return d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 function getDaysInMonth(year, month) {
@@ -666,9 +668,11 @@ function toggleVehicleFilter(vehicleId) {
 
 function updateVehicleSelectOptions() {
     // Populate select inside booking modal
-    bookingVehicleSelect.innerHTML = '<option value="" disabled selected>Scegli una vettura...</option>';
+    const chooseText = t('chooseVehicle');
+    const maintLabel = currentLang === 'it' ? ' (In manutenzione)' : ' (Under maintenance)';
+    bookingVehicleSelect.innerHTML = `<option value="" disabled selected>${chooseText}</option>`;
     vehicles.forEach(vehicle => {
-        const statusLabel = vehicle.status === 'maintenance' ? ' (In manutenzione)' : '';
+        const statusLabel = vehicle.status === 'maintenance' ? maintLabel : '';
         const option = document.createElement('option');
         option.value = vehicle.id;
         option.textContent = `${vehicle.brandModel} - ${vehicle.plate}${statusLabel}`;
@@ -1318,7 +1322,7 @@ function openBookingModal(booking = null, prefilledDate = null, prefilledTime = 
     
     if (booking) {
         selectedBooking = booking;
-        bookingModalTitle.textContent = 'Modifica Prenotazione';
+        bookingModalTitle.textContent = t('editBooking');
         bookingIdInput.value = booking.id;
         bookingClientInput.value = booking.clientName;
         bookingVehicleSelect.value = booking.vehicleId;
@@ -1343,7 +1347,7 @@ function openBookingModal(booking = null, prefilledDate = null, prefilledTime = 
         deleteBookingBtn.style.display = 'block';
     } else {
         selectedBooking = null;
-        bookingModalTitle.textContent = 'Nuova Prenotazione';
+        bookingModalTitle.textContent = t('newBooking');
         bookingIdInput.value = '';
         
         const today = new Date();
@@ -1545,9 +1549,13 @@ function exportReportToCSV() {
         return;
     }
 
-    // Costruisci il CSV
-    let csvContent = "\uFEFF"; // BOM per supportare caratteri speciali in Excel
-    csvContent += "Cliente;Veicolo;Inizio;Fine;Km Partenza;Km Rientro;Delta Km;Carburante Partenza;Carburante Rientro;Rendimento (EUR)\r\n";
+    // Build CSV header based on current language
+    let csvContent = "\uFEFF"; // BOM for Excel special chars support
+    if (currentLang === 'it') {
+        csvContent += "Cliente;Veicolo;Inizio;Fine;Km Partenza;Km Rientro;Delta Km;Carburante Partenza;Carburante Rientro;Rendimento (EUR)\r\n";
+    } else {
+        csvContent += "Client;Vehicle;Start;End;Start Km;Return Km;Delta Km;Fuel at Departure;Fuel at Return;Revenue (EUR)\r\n";
+    }
 
     filteredBookings.forEach(b => {
         const vehicle = vehicles.find(v => v.id === b.vehicleId);

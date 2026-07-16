@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n-title="true">Fast_cc - Gestione Auto Sostitutive</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="theme-color" content="#090d16">
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,10 +192,10 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="booking-fuel-start">Carburante Partenza</label>
+                        <label for="booking-fuel-start" data-i18n="fuelStart">Carburante Partenza</label>
                         <select id="booking-fuel-start">
-                            <option value="" selected>Non specificato</option>
-                            <option value="Vuoto">Vuoto</option>
+                            <option value="" selected data-i18n="fuelNotSpecified">Non specificato</option>
+                            <option value="Vuoto" data-i18n="fuelEmpty">Vuoto</option>
                             <option value="1/8">1/8</option>
                             <option value="2/8">2/8</option>
                             <option value="3/8">3/8</option>
@@ -199,14 +203,14 @@
                             <option value="5/8">5/8</option>
                             <option value="6/8">6/8</option>
                             <option value="7/8">7/8</option>
-                            <option value="8/8">8/8 (Pieno)</option>
+                            <option value="8/8" data-i18n="fuelFull">8/8 (Pieno)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="booking-fuel-end">Carburante Rientro</label>
+                        <label for="booking-fuel-end" data-i18n="fuelEnd">Carburante Rientro</label>
                         <select id="booking-fuel-end">
-                            <option value="" selected>Non specificato</option>
-                            <option value="Vuoto">Vuoto</option>
+                            <option value="" selected data-i18n="fuelNotSpecified">Non specificato</option>
+                            <option value="Vuoto" data-i18n="fuelEmpty">Vuoto</option>
                             <option value="1/8">1/8</option>
                             <option value="2/8">2/8</option>
                             <option value="3/8">3/8</option>
@@ -214,26 +218,26 @@
                             <option value="5/8">5/8</option>
                             <option value="6/8">6/8</option>
                             <option value="7/8">7/8</option>
-                            <option value="8/8">8/8 (Pieno)</option>
+                            <option value="8/8" data-i18n="fuelFull">8/8 (Pieno)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="booking-revenue">Rendimento Noleggio (€)</label>
-                    <input type="number" id="booking-revenue" step="0.01" min="0" placeholder="Es. 150.00">
+                    <label for="booking-revenue" data-i18n="revenue">Rendimento Noleggio (€)</label>
+                    <input type="number" id="booking-revenue" step="0.01" min="0" data-i18n-placeholder="revenuePh" placeholder="Es. 150.00">
                 </div>
 
                 <div class="form-group">
-                    <label for="booking-notes">Note / Recapito</label>
-                    <textarea id="booking-notes" rows="3" placeholder="Recapito telefonico o motivi della vettura sostitutiva..."></textarea>
+                    <label for="booking-notes" data-i18n="notes">Note / Recapito</label>
+                    <textarea id="booking-notes" rows="3" data-i18n-placeholder="notesPh" placeholder="Recapito telefonico o motivi della vettura sostitutiva..."></textarea>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn-danger" id="delete-booking-btn" style="display: none;">Elimina</button>
+                    <button type="button" class="btn-danger" id="delete-booking-btn" style="display: none;" data-i18n="delete">Elimina</button>
                     <div class="footer-right-buttons">
-                        <button type="button" class="btn-secondary" id="cancel-booking-btn">Annulla</button>
-                        <button type="submit" class="btn-primary">Salva</button>
+                        <button type="button" class="btn-secondary" id="cancel-booking-btn" data-i18n="cancel">Annulla</button>
+                        <button type="submit" class="btn-primary" data-i18n="save">Salva</button>
                     </div>
                 </div>
             </form>
@@ -252,42 +256,42 @@
             <form id="vehicle-form" class="modal-form">
                 <input type="hidden" id="vehicle-id">
                 <div class="form-group">
-                    <label for="vehicle-model">Marca e Modello</label>
-                    <input type="text" id="vehicle-model" required placeholder="Es. Fiat Panda Hybrid, Jeep Renegade">
+                    <label for="vehicle-model" data-i18n="brandModel">Marca e Modello</label>
+                    <input type="text" id="vehicle-model" required data-i18n-placeholder="brandModelPh" placeholder="Es. Fiat Panda Hybrid, Jeep Renegade">
                 </div>
 
                 <div class="form-group">
-                    <label for="vehicle-plate">Targa</label>
-                    <input type="text" id="vehicle-plate" required placeholder="Es. AB123CD" style="text-transform: uppercase;">
+                    <label for="vehicle-plate" data-i18n="plate">Targa</label>
+                    <input type="text" id="vehicle-plate" required data-i18n-placeholder="platePh" placeholder="Es. AB123CD" style="text-transform: uppercase;">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="vehicle-color">Colore Calendario</label>
+                        <label for="vehicle-color" data-i18n="calendarColor">Colore Calendario</label>
                         <div class="color-picker-container">
                             <input type="color" id="vehicle-color" value="#3b82f6">
-                            <span class="color-preview-text">Seleziona colore per le prenotazioni</span>
+                            <span class="color-preview-text" data-i18n="colorPreview">Seleziona colore per le prenotazioni</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="vehicle-status">Stato Iniziale</label>
+                        <label for="vehicle-status" data-i18n="initialStatus">Stato Iniziale</label>
                         <select id="vehicle-status" required>
-                            <option value="available" selected>Attiva / Disponibile</option>
-                            <option value="maintenance">In Manutenzione</option>
+                            <option value="available" selected data-i18n="statusAvailable">Attiva / Disponibile</option>
+                            <option value="maintenance" data-i18n="statusMaintenance">In Manutenzione</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="vehicle-km">Km Attuali</label>
-                        <input type="number" id="vehicle-km" min="0" placeholder="Es. 45000">
+                        <label for="vehicle-km" data-i18n="currentKm">Km Attuali</label>
+                        <input type="number" id="vehicle-km" min="0" data-i18n-placeholder="currentKmPh" placeholder="Es. 45000">
                     </div>
                     <div class="form-group">
-                        <label for="vehicle-fuel">Carburante Attuale</label>
+                        <label for="vehicle-fuel" data-i18n="currentFuel">Carburante Attuale</label>
                         <select id="vehicle-fuel">
-                            <option value="" selected>Non specificato</option>
-                            <option value="Vuoto">Vuoto</option>
+                            <option value="" selected data-i18n="fuelNotSpecified">Non specificato</option>
+                            <option value="Vuoto" data-i18n="fuelEmpty">Vuoto</option>
                             <option value="1/8">1/8</option>
                             <option value="2/8">2/8</option>
                             <option value="3/8">3/8</option>
@@ -295,19 +299,19 @@
                             <option value="5/8">5/8</option>
                             <option value="6/8">6/8</option>
                             <option value="7/8">7/8</option>
-                            <option value="8/8">8/8 (Pieno)</option>
+                            <option value="8/8" data-i18n="fuelFull">8/8 (Pieno)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="vehicle-notes">Note Aggiuntive</label>
-                    <input type="text" id="vehicle-notes" placeholder="Es. Dettagli sul carburante, chiavi, parcheggio">
+                    <label for="vehicle-notes" data-i18n="vehicleNotes">Note Aggiuntive</label>
+                    <input type="text" id="vehicle-notes" data-i18n-placeholder="vehicleNotesPh" placeholder="Es. Dettagli sul carburante, chiavi, parcheggio">
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn-secondary" id="cancel-vehicle-btn">Annulla</button>
-                    <button type="submit" class="btn-primary" id="vehicle-submit-btn">Aggiungi</button>
+                    <button type="button" class="btn-secondary" id="cancel-vehicle-btn" data-i18n="cancel">Annulla</button>
+                    <button type="submit" class="btn-primary" id="vehicle-submit-btn" data-i18n="addVehicleBtn">Aggiungi</button>
                 </div>
             </form>
         </div>
@@ -326,8 +330,8 @@
                 <p id="confirm-message">Sei sicuro di voler procedere?</p>
             </div>
             <div class="modal-footer" style="padding: 16px 20px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); margin-top: 0;">
-                <button type="button" class="btn-secondary" id="confirm-cancel-btn">Annulla</button>
-                <button type="button" class="btn-danger" id="confirm-ok-btn">Procedi</button>
+                <button type="button" class="btn-secondary" id="confirm-cancel-btn" data-i18n="cancel">Annulla</button>
+                <button type="button" class="btn-danger" id="confirm-ok-btn" data-i18n="confirmProceed">Procedi</button>
             </div>
         </div>
     </div>
@@ -376,15 +380,15 @@
                 <table class="report-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
                     <thead>
                         <tr style="border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.01);">
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Cliente</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Veicolo</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Inizio</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);">Fine</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Km Partenza</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Km Rientro</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Delta Km</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: center;">Carburante (Part./Rient.)</th>
-                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;">Rendimento</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);" data-i18n="thClient">Cliente</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);" data-i18n="thVehicle">Veicolo</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);" data-i18n="thStart">Inizio</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary);" data-i18n="thEnd">Fine</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;" data-i18n="thKmStart">Km Partenza</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;" data-i18n="thKmEnd">Km Rientro</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;" data-i18n="thDeltaKm">Delta Km</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: center;" data-i18n="thFuel">Carburante (Part./Rient.)</th>
+                            <th style="padding: 12px 16px; font-weight: 600; color: var(--text-secondary); text-align: right;" data-i18n="thRevenue">Rendimento</th>
                         </tr>
                     </thead>
                     <tbody id="report-table-body">
