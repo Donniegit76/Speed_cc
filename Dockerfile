@@ -15,6 +15,7 @@ COPY server.js ./
 COPY index.html ./
 COPY styles.css ./
 COPY app.js ./
+COPY favicon.png ./
 
 # Create data directory for volume mount persistence
 RUN mkdir -p /usr/src/app/data
